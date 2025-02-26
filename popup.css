@@ -71,7 +71,24 @@ h1 {
 .favicon-size {
   color: #666;
   font-size: 11px;
+  margin-bottom: 4px;
+}
+
+.favicon-source {
+  color: #666;
+  font-size: 11px;
+  margin-bottom: 4px;
+  width: 100%;
+  text-align: left;
+}
+
+.favicon-purpose {
+  color: #666;
+  font-size: 11px;
   margin-bottom: 8px;
+  width: 100%;
+  text-align: left;
+  font-style: italic;
 }
 
 .favicon-actions {

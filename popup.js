@@ -82,6 +82,22 @@ document.addEventListener('DOMContentLoaded', () => {
       item.appendChild(size);
     }
     
+    // 添加图标来源信息
+    if (favicon.source) {
+      const source = document.createElement('div');
+      source.className = 'favicon-source';
+      source.textContent = `来源: ${favicon.source}`;
+      item.appendChild(source);
+    }
+    
+    // 添加图标用途信息（如果有）
+    if (favicon.purpose) {
+      const purpose = document.createElement('div');
+      purpose.className = 'favicon-purpose';
+      purpose.textContent = `用途: ${favicon.purpose}`;
+      item.appendChild(purpose);
+    }
+    
     const actions = document.createElement('div');
     actions.className = 'favicon-actions';
     
@@ -143,7 +159,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 在页面中执行的函数，用于提取所有favicon信息
-function extractFavicons(baseUrl) {
+async function extractFavicons(baseUrl) {
+  // 存储所有找到的图标
+  let allFavicons = [];
+  
   // 获取所有link元素中的favicon
   const linkFavicons = Array.from(document.querySelectorAll('link[rel*="icon"]')).map(link => {
     const url = new URL(link.href, baseUrl).href;
@@ -155,34 +174,131 @@ function extractFavicons(baseUrl) {
       url,
       rel,
       size: sizes || '',
-      type: type || ''
+      type: type || '',
+      source: 'link元素'
     };
   });
+  
+  allFavicons = [...linkFavicons];
+  
+  // 检查网站是否有manifest.json文件
+  const manifestLink = document.querySelector('link[rel="manifest"]');
+  if (manifestLink) {
+    try {
+      const manifestUrl = new URL(manifestLink.href, baseUrl).href;
+      const response = await fetch(manifestUrl);
+      
+      if (response.ok) {
+        const manifest = await response.json();
+        
+        // 从manifest中提取图标信息
+        if (manifest.icons && Array.isArray(manifest.icons)) {
+          const manifestFavicons = manifest.icons.map(icon => {
+            // 确保图标URL是绝对路径
+            const iconUrl = new URL(icon.src, baseUrl).href;
+            
+            return {
+              url: iconUrl,
+              rel: 'manifest-icon',
+              size: icon.sizes || '',
+              type: icon.type || '',
+              purpose: icon.purpose || '',
+              source: 'Web Manifest'
+            };
+          });
+          
+          // 将manifest中的图标添加到结果中
+          allFavicons = [...allFavicons, ...manifestFavicons];
+        }
+      }
+    } catch (error) {
+      console.error('获取或解析manifest.json时出错:', error);
+    }
+  }
+  
+  // 检查是否有Apple Touch图标
+  const appleTouchIcons = Array.from(document.querySelectorAll('link[rel="apple-touch-icon"], link[rel="apple-touch-icon-precomposed"]')).map(link => {
+    const url = new URL(link.href, baseUrl).href;
+    const rel = link.getAttribute('rel');
+    const sizes = link.getAttribute('sizes');
+    
+    return {
+      url,
+      rel,
+      size: sizes || '',
+      type: 'image/png',
+      source: 'Apple Touch Icon'
+    };
+  });
+  
+  allFavicons = [...allFavicons, ...appleTouchIcons];
+  
+  // 检查是否有Microsoft Tile图标
+  const msTileImage = document.querySelector('meta[name="msapplication-TileImage"]');
+  if (msTileImage) {
+    const tileImageUrl = msTileImage.getAttribute('content');
+    if (tileImageUrl) {
+      allFavicons.push({
+        url: new URL(tileImageUrl, baseUrl).href,
+        rel: 'ms-tile',
+        size: '',
+        type: 'image/png',
+        source: 'Microsoft Tile'
+      });
+    }
+  }
+  
+  // 检查是否有Open Graph图标
+  const ogImage = document.querySelector('meta[property="og:image"]');
+  if (ogImage) {
+    const ogImageUrl = ogImage.getAttribute('content');
+    if (ogImageUrl) {
+      allFavicons.push({
+        url: new URL(ogImageUrl, baseUrl).href,
+        rel: 'og-image',
+        size: '',
+        type: '',
+        source: 'Open Graph'
+      });
+    }
+  }
   
   // 检查是否有默认的favicon.ico
   const defaultFavicon = {
     url: new URL('/favicon.ico', baseUrl).href,
     rel: 'default-icon',
     size: '',
-    type: 'image/x-icon'
+    type: 'image/x-icon',
+    source: '默认favicon.ico'
   };
   
   // 如果没有找到任何图标，添加默认的favicon.ico
-  if (linkFavicons.length === 0) {
+  if (allFavicons.length === 0) {
     return [defaultFavicon];
   }
   
   // 检查是否已包含默认favicon.ico，如果没有，则添加它
-  const hasDefaultFavicon = linkFavicons.some(favicon => 
+  const hasDefaultFavicon = allFavicons.some(favicon => 
     favicon.url.toLowerCase().endsWith('/favicon.ico')
   );
   
   if (!hasDefaultFavicon) {
-    linkFavicons.push(defaultFavicon);
+    allFavicons.push(defaultFavicon);
+  }
+  
+  // 去除重复的URL
+  const uniqueFavicons = [];
+  const seenUrls = new Set();
+  
+  for (const favicon of allFavicons) {
+    if (!seenUrls.has(favicon.url)) {
+      seenUrls.add(favicon.url);
+      uniqueFavicons.push(favicon);
+    }
   }
   
   // 按尺寸排序（如果有的话）
-  return linkFavicons.sort((a, b) => {
+  return uniqueFavicons.sort((a, b) => {
     // 提取尺寸数字
     const sizeA = a.size ? parseInt(a.size.split('x')[0]) : 0;
     const sizeB = b.size ? parseInt(b.size.split('x')[0]) : 0;
