@@ -208,6 +208,17 @@ button {
   gap: 6px;
 }
 
+button.icon-only {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 4px;
+}
+
+button.icon-only i {
+  font-size: 14px;
+}
+
 button.primary {
   background-color: var(--accent);
   color: white;

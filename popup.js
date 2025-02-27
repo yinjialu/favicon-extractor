@@ -138,7 +138,9 @@ document.addEventListener('DOMContentLoaded', () => {
     actions.className = 'favicon-actions';
     
     const copyButton = document.createElement('button');
-    copyButton.innerHTML = '<i class="fas fa-link"></i>复制链接';
+    copyButton.className = 'icon-only';
+    copyButton.innerHTML = '<i class="fas fa-link"></i>';
+    copyButton.title = '复制链接';
     copyButton.addEventListener('click', () => {
       navigator.clipboard.writeText(favicon.url)
         .then(() => {
@@ -151,8 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     const downloadButton = document.createElement('button');
-    downloadButton.className = 'primary';
-    downloadButton.innerHTML = '<i class="fas fa-download"></i>下载';
+    downloadButton.className = 'primary icon-only';
+    downloadButton.innerHTML = '<i class="fas fa-download"></i>';
+    downloadButton.title = '下载';
     downloadButton.addEventListener('click', () => {
       const filename = getFilenameFromUrl(favicon.url);
       chrome.downloads.download({
