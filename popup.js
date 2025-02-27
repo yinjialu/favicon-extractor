@@ -2,15 +2,40 @@ document.addEventListener('DOMContentLoaded', () => {
   const faviconsContainer = document.getElementById('favicons-container');
   const loadingElement = document.getElementById('loading');
   const emptyElement = document.getElementById('empty');
-
-  // 创建一个状态消息元素
-  const statusMessage = document.createElement('div');
-  statusMessage.className = 'status-message';
-  document.body.appendChild(statusMessage);
+  const statusMessage = document.getElementById('status-message');
+  const themeToggle = document.getElementById('theme-toggle');
+  
+  // 主题切换功能
+  function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', savedTheme);
+    themeToggle.innerHTML = savedTheme === 'dark' 
+      ? '<i class="fas fa-sun"></i>' 
+      : '<i class="fas fa-moon"></i>';
+  }
+  
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = document.body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    themeToggle.innerHTML = newTheme === 'dark' 
+      ? '<i class="fas fa-sun"></i>' 
+      : '<i class="fas fa-moon"></i>';
+  });
+  
+  // 初始化主题
+  initTheme();
 
   // 显示状态消息的函数
-  function showStatus(message) {
-    statusMessage.textContent = message;
+  function showStatus(message, type = 'info') {
+    let icon = 'fa-info-circle';
+    if (type === 'success') icon = 'fa-check-circle';
+    if (type === 'error') icon = 'fa-exclamation-circle';
+    
+    statusMessage.innerHTML = `<i class="fas ${icon}"></i>${message}`;
     statusMessage.style.opacity = '1';
     setTimeout(() => {
       statusMessage.style.opacity = '0';
@@ -37,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadingElement.style.display = 'none';
       
       if (favicons.length === 0) {
-        emptyElement.style.display = 'block';
+        emptyElement.style.display = 'flex';
       } else {
         for (const favicon of favicons) {
           createFaviconItem(favicon);
@@ -45,8 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (error) {
       loadingElement.style.display = 'none';
-      emptyElement.textContent = '提取图标时出错：' + error.message;
-      emptyElement.style.display = 'block';
+      emptyElement.innerHTML = '<i class="fas fa-exclamation-circle"></i><span>提取图标时出错</span>';
+      emptyElement.style.display = 'flex';
       console.error('Error:', error);
     }
   });
@@ -56,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const item = document.createElement('div');
     item.className = 'favicon-item';
     
+    // 图片容器
     const imageContainer = document.createElement('div');
     imageContainer.className = 'favicon-image';
     
@@ -63,59 +89,70 @@ document.addEventListener('DOMContentLoaded', () => {
     img.src = favicon.url;
     img.alt = 'Favicon';
     img.onerror = () => {
-      img.src = 'images/broken.png';
+      img.src = 'images/broken.svg';
       img.alt = '加载失败';
     };
     
     imageContainer.appendChild(img);
     item.appendChild(imageContainer);
     
+    // 内容容器
+    const content = document.createElement('div');
+    content.className = 'favicon-content';
+    
+    // 图标信息
     const info = document.createElement('div');
     info.className = 'favicon-info';
     info.textContent = favicon.rel || '图标';
-    item.appendChild(info);
+    content.appendChild(info);
     
+    // 元数据容器
+    const metadata = document.createElement('div');
+    metadata.className = 'favicon-metadata';
+    
+    // 尺寸信息
     if (favicon.size) {
       const size = document.createElement('div');
-      size.className = 'favicon-size';
-      size.textContent = favicon.size;
-      item.appendChild(size);
+      size.innerHTML = `<i class="fas fa-arrows-alt"></i>${favicon.size}`;
+      metadata.appendChild(size);
     }
     
-    // 添加图标来源信息
+    // 来源信息
     if (favicon.source) {
       const source = document.createElement('div');
-      source.className = 'favicon-source';
-      source.textContent = `来源: ${favicon.source}`;
-      item.appendChild(source);
+      source.innerHTML = `<i class="fas fa-code"></i>${favicon.source}`;
+      metadata.appendChild(source);
     }
     
-    // 添加图标用途信息（如果有）
+    // 用途信息
     if (favicon.purpose) {
       const purpose = document.createElement('div');
-      purpose.className = 'favicon-purpose';
-      purpose.textContent = `用途: ${favicon.purpose}`;
-      item.appendChild(purpose);
+      purpose.innerHTML = `<i class="fas fa-tag"></i>${favicon.purpose}`;
+      metadata.appendChild(purpose);
     }
     
+    content.appendChild(metadata);
+    
+    // 操作按钮
     const actions = document.createElement('div');
     actions.className = 'favicon-actions';
     
     const copyButton = document.createElement('button');
-    copyButton.textContent = '复制链接';
+    copyButton.innerHTML = '<i class="fas fa-link"></i>复制链接';
     copyButton.addEventListener('click', () => {
       navigator.clipboard.writeText(favicon.url)
         .then(() => {
-          showStatus('已复制链接到剪贴板');
+          showStatus('已复制链接到剪贴板', 'success');
         })
         .catch((err) => {
-          showStatus('复制失败');
+          showStatus('复制失败', 'error');
           console.error('复制失败:', err);
         });
     });
     
     const downloadButton = document.createElement('button');
-    downloadButton.textContent = '下载';
+    downloadButton.className = 'primary';
+    downloadButton.innerHTML = '<i class="fas fa-download"></i>下载';
     downloadButton.addEventListener('click', () => {
       const filename = getFilenameFromUrl(favicon.url);
       chrome.downloads.download({
@@ -123,18 +160,19 @@ document.addEventListener('DOMContentLoaded', () => {
         filename: filename
       }, (downloadId) => {
         if (chrome.runtime.lastError) {
-          showStatus('下载失败');
+          showStatus('下载失败', 'error');
           console.error('下载失败:', chrome.runtime.lastError);
         } else {
-          showStatus('开始下载');
+          showStatus('开始下载', 'success');
         }
       });
     });
     
     actions.appendChild(copyButton);
     actions.appendChild(downloadButton);
-    item.appendChild(actions);
+    content.appendChild(actions);
     
+    item.appendChild(content);
     faviconsContainer.appendChild(item);
   }
   

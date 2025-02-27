@@ -1,125 +1,225 @@
-body {
-  font-family: Arial, sans-serif;
+:root {
+  /* Light Theme */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f6f3;
+  --text-primary: #37352f;
+  --text-secondary: #6b6b6b;
+  --border: #e6e6e6;
+  --accent: #2eaadc;
+  --accent-hover: #0b85b1;
+  --shadow: rgba(0, 0, 0, 0.05);
+  --icon-bg: #f0f0f0;
+}
+
+[data-theme="dark"] {
+  /* Dark Theme */
+  --bg-primary: #191919;
+  --bg-secondary: #252525;
+  --text-primary: #ffffff;
+  --text-secondary: #9fa1a5;
+  --border: #383838;
+  --accent: #2eaadc;
+  --accent-hover: #5ec4e6;
+  --shadow: rgba(0, 0, 0, 0.2);
+  --icon-bg: #303030;
+}
+
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  width: 400px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  margin: 0;
+  padding: 0;
+  width: 420px;
   max-height: 600px;
   overflow-y: auto;
-  background-color: #f5f5f5;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
   padding: 16px;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
 h1 {
   font-size: 18px;
-  text-align: center;
-  margin-top: 0;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.icon-button {
+  background: var(--icon-bg);
+  border: none;
+  border-radius: 4px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: background-color 0.2s;
+}
+
+.icon-button:hover {
+  background-color: var(--border);
+}
+
+.status-section {
   margin-bottom: 16px;
-  color: #333;
 }
 
 .loading, .empty {
   text-align: center;
-  padding: 20px;
-  color: #666;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  border-top-color: var(--accent);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.empty i {
+  font-size: 24px;
+  opacity: 0.7;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
 .favicon-item {
-  background-color: white;
+  background-color: var(--bg-secondary);
   border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.favicon-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow);
 }
 
 .favicon-image {
   width: 100%;
-  height: 100px;
+  height: 120px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 8px;
-  border: 1px solid #eee;
-  border-radius: 4px;
-  background-color: #fafafa;
-  overflow: hidden;
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
 }
 
 .favicon-image img {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 80%;
+  max-height: 80%;
   object-fit: contain;
 }
 
+.favicon-content {
+  padding: 12px;
+}
+
 .favicon-info {
-  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.favicon-metadata {
+  margin-bottom: 12px;
   font-size: 12px;
-  color: #333;
-  margin-bottom: 8px;
+  color: var(--text-secondary);
 }
 
-.favicon-size {
-  color: #666;
-  font-size: 11px;
+.favicon-metadata div {
   margin-bottom: 4px;
+  display: flex;
+  align-items: center;
 }
 
-.favicon-source {
-  color: #666;
+.favicon-metadata i {
+  width: 16px;
+  margin-right: 6px;
   font-size: 11px;
-  margin-bottom: 4px;
-  width: 100%;
-  text-align: left;
-}
-
-.favicon-purpose {
-  color: #666;
-  font-size: 11px;
-  margin-bottom: 8px;
-  width: 100%;
-  text-align: left;
-  font-style: italic;
 }
 
 .favicon-actions {
   display: flex;
-  width: 100%;
-  justify-content: space-between;
+  gap: 8px;
 }
 
 button {
-  background-color: #4285f4;
-  color: white;
-  border: none;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
   border-radius: 4px;
   padding: 6px 12px;
   font-size: 12px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex: 1;
-  margin: 0 4px;
+  gap: 6px;
+}
+
+button.primary {
+  background-color: var(--accent);
+  color: white;
+  border: none;
 }
 
 button:hover {
-  background-color: #3367d6;
+  background-color: var(--border);
 }
 
-button:first-child {
-  margin-left: 0;
-}
-
-button:last-child {
-  margin-right: 0;
+button.primary:hover {
+  background-color: var(--accent-hover);
 }
 
 .status-message {
@@ -127,12 +227,22 @@ button:last-child {
   bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
   padding: 8px 16px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 13px;
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
+  box-shadow: 0 4px 12px var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-message i {
+  font-size: 14px;
+  color: var(--accent);
 }
