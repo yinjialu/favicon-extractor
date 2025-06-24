@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Favicon Extractor</title>
+    <title data-i18n="title">Favicon Extractor</title>
     <link rel="stylesheet" href="popup.css" />
     <link
       rel="stylesheet"
@@ -13,7 +13,7 @@
   <body>
     <div class="container">
       <div class="header">
-        <h1>Favicon Extractor</h1>
+        <h1 data-i18n="title">Favicon Extractor</h1>
         <div class="header-actions">
           <button id="theme-toggle" class="icon-button">
             <i class="fas fa-moon"></i>
@@ -24,11 +24,11 @@
       <div class="status-section">
         <div class="loading" id="loading" style="display: flex">
           <div class="loading-spinner"></div>
-          <span>正在提取图标...</span>
+          <span data-i18n="extracting">正在提取图标...</span>
         </div>
         <div class="empty" id="empty" style="display: none">
           <i class="fas fa-search"></i>
-          <span>未找到图标</span>
+          <span data-i18n="noIconsFound">未找到图标</span>
         </div>
       </div>
 

@@ -1,7 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Favicon Extractor",
-  "description": "提取当前网页的所有图标链接",
+  "name": "__MSG_appName__",
+  "description": "__MSG_appDescription__",
+  "default_locale": "en",
   "version": "1.0",
   "icons": {
     "16": "images/icon16.png",
@@ -16,12 +17,6 @@
       "128": "images/icon128.png"
     }
   },
-  "permissions": [
-    "activeTab",
-    "scripting",
-    "downloads"
-  ],
-  "host_permissions": [
-    "<all_urls>"
-  ]
+  "permissions": ["activeTab", "scripting", "downloads"],
+  "host_permissions": ["<all_urls>"]
 }

@@ -1,0 +1,90 @@
+{
+  "appName": {
+    "message": "图标提取器",
+    "description": "应用程序名称"
+  },
+  "appDescription": {
+    "message": "提取当前网页的所有图标链接",
+    "description": "应用程序描述"
+  },
+  "title": {
+    "message": "图标提取器",
+    "description": "主标题"
+  },
+  "extracting": {
+    "message": "正在提取图标...",
+    "description": "提取图标时的加载消息"
+  },
+  "noIconsFound": {
+    "message": "未找到图标",
+    "description": "未找到图标时的消息"
+  },
+  "extractError": {
+    "message": "提取图标时出错",
+    "description": "通用错误消息"
+  },
+  "pageNotSupported": {
+    "message": "此页面不支持图标提取",
+    "description": "不支持的页面错误消息"
+  },
+  "cannotAccess": {
+    "message": "无法访问此页面",
+    "description": "无法访问页面的错误消息"
+  },
+  "copyLink": {
+    "message": "复制链接",
+    "description": "复制链接按钮的提示"
+  },
+  "download": {
+    "message": "下载",
+    "description": "下载按钮的提示"
+  },
+  "linkCopied": {
+    "message": "已复制链接到剪贴板",
+    "description": "链接复制成功的消息"
+  },
+  "copyFailed": {
+    "message": "复制失败",
+    "description": "复制失败的错误消息"
+  },
+  "downloadStarted": {
+    "message": "开始下载",
+    "description": "下载开始的成功消息"
+  },
+  "downloadFailed": {
+    "message": "下载失败",
+    "description": "下载失败的错误消息"
+  },
+  "loadFailed": {
+    "message": "加载失败",
+    "description": "图片加载失败的替代文本"
+  },
+  "icon": {
+    "message": "图标",
+    "description": "默认图标描述"
+  },
+  "sourceLinkElement": {
+    "message": "link元素",
+    "description": "来源：link元素"
+  },
+  "sourceWebManifest": {
+    "message": "Web Manifest",
+    "description": "来源：Web Manifest"
+  },
+  "sourceAppleTouchIcon": {
+    "message": "Apple Touch Icon",
+    "description": "来源：Apple Touch Icon"
+  },
+  "sourceMicrosoftTile": {
+    "message": "Microsoft Tile",
+    "description": "来源：Microsoft Tile"
+  },
+  "sourceOpenGraph": {
+    "message": "Open Graph",
+    "description": "来源：Open Graph"
+  },
+  "sourceDefaultFavicon": {
+    "message": "默认favicon.ico",
+    "description": "来源：默认favicon.ico"
+  }
+}

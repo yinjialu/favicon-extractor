@@ -1,0 +1,90 @@
+{
+  "appName": {
+    "message": "Favicon Extractor",
+    "description": "Application name"
+  },
+  "appDescription": {
+    "message": "Extract all favicon links from the current webpage",
+    "description": "Application description"
+  },
+  "title": {
+    "message": "Favicon Extractor",
+    "description": "Main title"
+  },
+  "extracting": {
+    "message": "Extracting icons...",
+    "description": "Loading message when extracting favicons"
+  },
+  "noIconsFound": {
+    "message": "No icons found",
+    "description": "Message when no icons are found"
+  },
+  "extractError": {
+    "message": "Error extracting icons",
+    "description": "Generic error message"
+  },
+  "pageNotSupported": {
+    "message": "Icon extraction not supported on this page",
+    "description": "Error message for unsupported pages"
+  },
+  "cannotAccess": {
+    "message": "Cannot access this page",
+    "description": "Error message for inaccessible pages"
+  },
+  "copyLink": {
+    "message": "Copy link",
+    "description": "Tooltip for copy link button"
+  },
+  "download": {
+    "message": "Download",
+    "description": "Tooltip for download button"
+  },
+  "linkCopied": {
+    "message": "Link copied to clipboard",
+    "description": "Success message when link is copied"
+  },
+  "copyFailed": {
+    "message": "Copy failed",
+    "description": "Error message when copy fails"
+  },
+  "downloadStarted": {
+    "message": "Download started",
+    "description": "Success message when download starts"
+  },
+  "downloadFailed": {
+    "message": "Download failed",
+    "description": "Error message when download fails"
+  },
+  "loadFailed": {
+    "message": "Load failed",
+    "description": "Alt text for broken images"
+  },
+  "icon": {
+    "message": "Icon",
+    "description": "Default icon description"
+  },
+  "sourceLinkElement": {
+    "message": "link element",
+    "description": "Source: link element"
+  },
+  "sourceWebManifest": {
+    "message": "Web Manifest",
+    "description": "Source: Web Manifest"
+  },
+  "sourceAppleTouchIcon": {
+    "message": "Apple Touch Icon",
+    "description": "Source: Apple Touch Icon"
+  },
+  "sourceMicrosoftTile": {
+    "message": "Microsoft Tile",
+    "description": "Source: Microsoft Tile"
+  },
+  "sourceOpenGraph": {
+    "message": "Open Graph",
+    "description": "Source: Open Graph"
+  },
+  "sourceDefaultFavicon": {
+    "message": "Default favicon.ico",
+    "description": "Source: Default favicon.ico"
+  }
+}

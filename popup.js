@@ -1,4 +1,54 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // 国际化功能
+  function initI18n() {
+    // 获取所有带有 data-i18n 属性的元素
+    const elements = document.querySelectorAll('[data-i18n]')
+    elements.forEach(element => {
+      const key = element.getAttribute('data-i18n')
+      const message = chrome.i18n.getMessage(key)
+      if (message) {
+        element.textContent = message
+      }
+    })
+
+    // 更新页面标题
+    const titleElement = document.querySelector('title[data-i18n]')
+    if (titleElement) {
+      const titleKey = titleElement.getAttribute('data-i18n')
+      const titleMessage = chrome.i18n.getMessage(titleKey)
+      if (titleMessage) {
+        document.title = titleMessage
+      }
+    }
+  }
+
+  // 获取国际化消息的辅助函数
+  function t(key, ...substitutions) {
+    return chrome.i18n.getMessage(key, substitutions) || key
+  }
+
+  // 本地化源信息
+  function getLocalizedSource(source) {
+    const sourceMap = {
+      link元素: t('sourceLinkElement'),
+      link_element: t('sourceLinkElement'),
+      'Web Manifest': t('sourceWebManifest'),
+      web_manifest: t('sourceWebManifest'),
+      'Apple Touch Icon': t('sourceAppleTouchIcon'),
+      apple_touch_icon: t('sourceAppleTouchIcon'),
+      'Microsoft Tile': t('sourceMicrosoftTile'),
+      microsoft_tile: t('sourceMicrosoftTile'),
+      'Open Graph': t('sourceOpenGraph'),
+      open_graph: t('sourceOpenGraph'),
+      '默认favicon.ico': t('sourceDefaultFavicon'),
+      default_favicon: t('sourceDefaultFavicon'),
+    }
+    return sourceMap[source] || source
+  }
+
+  // 初始化国际化
+  initI18n()
+
   const faviconsContainer = document.getElementById('favicons-container')
   const loadingElement = document.getElementById('loading')
   const emptyElement = document.getElementById('empty')
@@ -115,11 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingElement.style.display = 'none'
 
         // 根据错误类型显示不同的提示
-        let errorMessage = '提取图标时出错'
+        let errorMessage = t('extractError')
         if (error.message.includes('无法在此页面')) {
-          errorMessage = '此页面不支持图标提取'
+          errorMessage = t('pageNotSupported')
         } else if (error.message.includes('Cannot access')) {
-          errorMessage = '无法访问此页面'
+          errorMessage = t('cannotAccess')
         }
 
         emptyElement.innerHTML = `<i class="fas fa-exclamation-circle"></i><span>${errorMessage}</span>`
@@ -143,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     img.alt = 'Favicon'
     img.onerror = () => {
       img.src = 'images/broken.svg'
-      img.alt = '加载失败'
+      img.alt = t('loadFailed')
     }
 
     imageContainer.appendChild(img)
@@ -156,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 图标信息
     const info = document.createElement('div')
     info.className = 'favicon-info'
-    info.textContent = favicon.rel || '图标'
+    info.textContent = favicon.rel || t('icon')
     content.appendChild(info)
 
     // 元数据容器
@@ -173,7 +223,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 来源信息
     if (favicon.source) {
       const source = document.createElement('div')
-      source.innerHTML = `<i class="fas fa-code"></i>${favicon.source}`
+      source.innerHTML = `<i class="fas fa-code"></i>${getLocalizedSource(
+        favicon.source
+      )}`
       metadata.appendChild(source)
     }
 
@@ -193,15 +245,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyButton = document.createElement('button')
     copyButton.className = 'icon-only'
     copyButton.innerHTML = '<i class="fas fa-link"></i>'
-    copyButton.title = '复制链接'
+    copyButton.title = t('copyLink')
     copyButton.addEventListener('click', () => {
       navigator.clipboard
         .writeText(favicon.url)
         .then(() => {
-          showStatus('已复制链接到剪贴板', 'success')
+          showStatus(t('linkCopied'), 'success')
         })
         .catch(err => {
-          showStatus('复制失败', 'error')
+          showStatus(t('copyFailed'), 'error')
           console.error('复制失败:', err)
         })
     })
@@ -209,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadButton = document.createElement('button')
     downloadButton.className = 'primary icon-only'
     downloadButton.innerHTML = '<i class="fas fa-download"></i>'
-    downloadButton.title = '下载'
+    downloadButton.title = t('download')
     downloadButton.addEventListener('click', () => {
       const filename = getFilenameFromUrl(favicon.url)
       chrome.downloads.download(
@@ -219,10 +271,10 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         downloadId => {
           if (chrome.runtime.lastError) {
-            showStatus('下载失败', 'error')
+            showStatus(t('downloadFailed'), 'error')
             console.error('下载失败:', chrome.runtime.lastError)
           } else {
-            showStatus('开始下载', 'success')
+            showStatus(t('downloadStarted'), 'success')
           }
         }
       )
@@ -275,7 +327,7 @@ async function extractFavicons(baseUrl) {
       rel,
       size: sizes || '',
       type: type || '',
-      source: 'link元素',
+      source: 'link_element',
     }
   })
 
@@ -303,7 +355,7 @@ async function extractFavicons(baseUrl) {
               size: icon.sizes || '',
               type: icon.type || '',
               purpose: icon.purpose || '',
-              source: 'Web Manifest',
+              source: 'web_manifest',
             }
           })
 
@@ -331,7 +383,7 @@ async function extractFavicons(baseUrl) {
       rel,
       size: sizes || '',
       type: 'image/png',
-      source: 'Apple Touch Icon',
+      source: 'apple_touch_icon',
     }
   })
 
@@ -349,7 +401,7 @@ async function extractFavicons(baseUrl) {
         rel: 'ms-tile',
         size: '',
         type: 'image/png',
-        source: 'Microsoft Tile',
+        source: 'microsoft_tile',
       })
     }
   }
@@ -364,7 +416,7 @@ async function extractFavicons(baseUrl) {
         rel: 'og-image',
         size: '',
         type: '',
-        source: 'Open Graph',
+        source: 'open_graph',
       })
     }
   }
@@ -375,7 +427,7 @@ async function extractFavicons(baseUrl) {
     rel: 'default-icon',
     size: '',
     type: 'image/x-icon',
-    source: '默认favicon.ico',
+    source: 'default_favicon',
   }
 
   // 如果没有找到任何图标，添加默认的favicon.ico
